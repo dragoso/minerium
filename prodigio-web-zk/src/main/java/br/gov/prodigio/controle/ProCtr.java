@@ -345,9 +345,8 @@ public class ProCtr<ENTITY extends ProBaseVO> extends GenericForwardComposer {
 			aposPesquisar(setAux);
 			if (total <= pageSize) {
 				getWindowAtual().getFellow("divRegistrosPorPagina").setVisible(false);
-			} else {
-				getWindowAtual().getFellow("divRegistrosPorPagina").setVisible(true);
 			}
+			// removido pois apos pesquisar o usuario pode querer alterar a quantia de exibição por página.
 			if (total == 0) {
 				final String mensagemRetornoPesquisa = getMensagemRetornoPesquisa();
 				if (mensagemRetornoPesquisa != null) {
@@ -2186,8 +2185,20 @@ public class ProCtr<ENTITY extends ProBaseVO> extends GenericForwardComposer {
 		EventListener eventoEnterRegistrosPorPagina = new EventListener() {
 			@Override
 			public void onEvent(Event e) throws Exception {
+				if (numeroDeRegistros.getValue() == null) {
+					numeroDeRegistros.setValue(1);
+				}
+				String numero = Integer.toString(numeroDeRegistros.getValue());
+				if(numero.contains("-")) {
+					numero = numero.replace("-", "");
+					numeroDeRegistros.setValue(Integer.parseInt(numero));
+				}
+				if (numeroDeRegistros.getValue() == 0 || numeroDeRegistros.getValue() == null) {
+					numeroDeRegistros.setValue(1);
+				}
 				pesquisar();
 			}
+			
 		};
 		numeroDeRegistros.addEventListener(Events.ON_OK, eventoEnterRegistrosPorPagina);
 
@@ -2232,7 +2243,13 @@ public class ProCtr<ENTITY extends ProBaseVO> extends GenericForwardComposer {
 
 			listFooter.setParent(listFoot);
 
-			listFooter.setSpan(sylistbox.getListhead().getChildren().size());
+			int i = 0;
+			
+			for (Component cp : sylistbox.getListhead().getChildren()) {
+				if(cp.isVisible()) {
+					i++;
+				}
+			}
 
 			sylistbox.appendChild(listFoot);
 
