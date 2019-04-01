@@ -2245,12 +2245,15 @@ public class ProCtr<ENTITY extends ProBaseVO> extends GenericForwardComposer {
 
 			int i = 0;
 			
+			// Correção pois quando a visibilidade esta false, quebra a box de paginação.
 			for (Component cp : sylistbox.getListhead().getChildren()) {
 				if(cp.isVisible()) {
 					i++;
 				}
 			}
 
+			listFooter.setSpan(i);
+			
 			sylistbox.appendChild(listFoot);
 
 			sylistbox.setSpan("true");
